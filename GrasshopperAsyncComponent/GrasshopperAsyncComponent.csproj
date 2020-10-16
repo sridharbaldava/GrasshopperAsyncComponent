@@ -35,39 +35,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Eto, Version=2.5.0.0, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>packages\RhinoCommon.6.29.20238.11501\lib\net45\Eto.dll</HintPath>
-    </Reference>
-    <Reference Include="GH_IO, Version=6.29.20238.11500, Culture=neutral, PublicKeyToken=6a29997d2e6b4f97, processorArchitecture=MSIL">
-      <HintPath>packages\Grasshopper.6.29.20238.11501\lib\net45\GH_IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Grasshopper, Version=6.29.20238.11500, Culture=neutral, PublicKeyToken=dda4f5ec2cd80803, processorArchitecture=MSIL">
-      <HintPath>packages\Grasshopper.6.29.20238.11501\lib\net45\Grasshopper.dll</HintPath>
-    </Reference>
-    <Reference Include="Rhino.UI, Version=6.29.20238.11500, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>packages\RhinoCommon.6.29.20238.11501\lib\net45\Rhino.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="RhinoCommon, Version=6.29.20238.11500, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>packages\RhinoCommon.6.29.20238.11501\lib\net45\RhinoCommon.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Base\GH_AsyncComponent.cs" />
     <Compile Include="Info\GrasshopperAsyncComponentInfo.cs" />
     <Compile Include="Base\WorkerInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleImplementations\Sample_PrimeCalculatorAsyncComponent.cs" />
-    <Compile Include="SampleImplementations\Sample_UslessCyclesComponent.cs" />
+    <Compile Include="SampleImplementations\Sample_SAPReadAreaLoads.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="Grasshopper">
+      <Version>6.29.20238.11501</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.5.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="SAP2000v1">
+      <HintPath>..\..\..\..\Program Files\Computers and Structures\SAP2000 21\SAP2000v1.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -90,13 +78,4 @@ Erase "$(TargetPath)"</PostBuildEvent>
     </StartArguments>
     <StartAction>Program</StartAction>
   </PropertyGroup>
-  <Import Project="packages\RhinoCommon.6.29.20238.11501\build\net45\RhinoCommon.targets" Condition="Exists('packages\RhinoCommon.6.29.20238.11501\build\net45\RhinoCommon.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('packages\RhinoCommon.6.29.20238.11501\build\net45\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\RhinoCommon.6.29.20238.11501\build\net45\RhinoCommon.targets'))" />
-    <Error Condition="!Exists('packages\Grasshopper.6.29.20238.11501\build\net45\Grasshopper.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Grasshopper.6.29.20238.11501\build\net45\Grasshopper.targets'))" />
-  </Target>
-  <Import Project="packages\Grasshopper.6.29.20238.11501\build\net45\Grasshopper.targets" Condition="Exists('packages\Grasshopper.6.29.20238.11501\build\net45\Grasshopper.targets')" />
 </Project>
