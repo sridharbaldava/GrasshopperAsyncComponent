@@ -15,14 +15,15 @@ Looks nice, doesn't it? Notice that the solution runs "eagerly" - every time the
 
 - **Grasshopper and Rhino are still responsive!**
 - **There's progress reporting!** (personally I hate waiting for Gh to unfreeze...).
+- **Thread safe**: 99% of the times this won't explode in your face. It still might though!
 
 ### Approach
 
 Provides an abstract `GH_AsyncComponent` which you can inherit from to scaffold your own async component. There's more info in the [blogpost](https://speckle.systems/blog/async-gh/) on how to go about it.
 
-Even better, there's a [sample component that shows how an implementation could look like](https://github.com/specklesystems/GrasshopperAsyncComponent/tree/main/GrasshopperAsyncComponent/SampleImplementations)! There's two components in that folder:
-- The Useless Spinner: does no meaningfull CPU work, just keeps a thread busy with SpinWait()
-- The N-th Prime Calculator: can actually spin your computer's fans quite a bit (for numbers > 100.000) 
+> #### Checkout the sample implementation! 
+> - [Prime number calculator](https://github.com/specklesystems/GrasshopperAsyncComponent/blob/a53cef31a8750a18d06fad0f41b2dc452fdc253b/GrasshopperAsyncComponentDemo/SampleImplementations/Sample_PrimeCalculatorAsyncComponent.cs#L11-L53) Calculates the n'th prime. Can actually spin your computer's fans quite a bit for numbers > 100.000!
+> - [Usless spinner](https://github.com/specklesystems/GrasshopperAsyncComponent/blob/2f2be53bffd2402337ba40d65bb5b619d1161b3e/GrasshopperAsyncComponentDemo/SampleImplementations/Sample_UslessCyclesComponent.cs#L13-L91) does no meaningfull CPU work, just keeps a thread busy with SpinWait().
 
 ### Current limitations
 
@@ -45,6 +46,25 @@ Other limitations:
 Q: Does this component use all my cores? A: OH YES. It goes WROOOM.
 
 ![image](https://user-images.githubusercontent.com/7696515/95597125-29310900-0a46-11eb-99ce-663b34506a7a.png)
+
+Q: Can I enable cancellation of a longer running task? 
+
+A: Yes, now you can! In your component, just add a right click menu action like so:
+
+```cs
+
+    public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
+    {
+      base.AppendAdditionalMenuItems(menu);
+      Menu_AppendItem(menu, "Cancel", (s, e) =>
+      {
+        RequestCancellation();
+      });
+    }
+
+```
+
+
 
 ### Debugging
 

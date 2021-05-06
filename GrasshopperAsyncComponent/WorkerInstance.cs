@@ -14,6 +14,12 @@ namespace GrasshopperAsyncComponent
   /// </summary>
   public abstract class WorkerInstance
   {
+
+    /// <summary>
+    /// The parent component. Useful for passing state back to the host component.
+    /// </summary>
+    public GH_Component Parent { get; set; }
+    
     /// <summary>
     /// This token is set by the parent <see cref="GH_AsyncComponent"/>. 
     /// </summary>
@@ -24,6 +30,11 @@ namespace GrasshopperAsyncComponent
     /// </summary>
     public string Id { get; set; }
 
+    protected WorkerInstance(GH_Component _parent)
+    {
+      Parent = _parent;
+    }
+
     /// <summary>
     /// This is a "factory" method. It should return a fresh instance of this class, but with all the necessary state that you might have passed on directly from your component.
     /// </summary>
@@ -32,12 +43,11 @@ namespace GrasshopperAsyncComponent
 
     /// <summary>
     /// This method is where the actual calculation/computation/heavy lifting should be done. 
-    /// <b>Make sure you always check as frequently as you can if <see cref="WorkerInstance.CancellationToken"/> is cancelled. For an example, see the <see cref="GrasshopperAsyncComponent.SampleImplementations.PrimeCalculatorWorker"/>.</b>
+    /// <b>Make sure you always check as frequently as you can if <see cref="WorkerInstance.CancellationToken"/> is cancelled. For an example, see the <see cref="PrimeCalculatorWorker"/>.</b>
     /// </summary>
     /// <param name="ReportProgress">Call this to report progress up to the parent component.</param>
-    /// <param name="ReportError">Call this to report errors up to the parent component.</param>
     /// <param name="Done">Call this when everything is <b>done</b>. It will tell the parent component that you're ready to <see cref="SetData(IGH_DataAccess)"/>.</param>
-    public abstract void DoWork(Action<string, double> ReportProgress, Action<string, GH_RuntimeMessageLevel> ReportError, Action Done);
+    public abstract void DoWork(Action<string, double> ReportProgress, Action Done);
 
     /// <summary>
     /// Write your data setting logic here. <b>Do not call this function directly from this class. It will be invoked by the parent <see cref="GH_AsyncComponent"/> after you've called `Done` in the <see cref="DoWork(Action{string}, Action{string, GH_RuntimeMessageLevel}, Action)"/> function.</b>
