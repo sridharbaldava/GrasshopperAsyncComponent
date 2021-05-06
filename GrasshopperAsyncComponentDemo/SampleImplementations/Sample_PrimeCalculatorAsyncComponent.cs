@@ -5,14 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using GrasshopperAsyncComponent;
+using System.Windows.Forms;
 
-namespace GrasshopperAsyncComponent.SampleImplementations
+namespace GrasshopperAsyncComponentDemo.SampleImplementations
 {
   public class Sample_PrimeCalculatorAsyncComponent : GH_AsyncComponent
   {
     public override Guid ComponentGuid { get => new Guid("22C612B0-2C57-47CE-B9FE-E10621F18933"); }
 
-    protected override System.Drawing.Bitmap Icon { get => null; }
+    protected override System.Drawing.Bitmap Icon { get => Properties.Resources.logo32; }
 
     public override GH_Exposure Exposure => GH_Exposure.primary;
 
@@ -29,7 +31,15 @@ namespace GrasshopperAsyncComponent.SampleImplementations
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
       pManager.AddNumberParameter("Output", "O", "The n-th prime number.", GH_ParamAccess.item);
+    }
 
+    public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
+    {
+      base.AppendAdditionalMenuItems(menu);
+      Menu_AppendItem(menu, "Cancel", (s, e) =>
+      {
+        RequestCancellation();
+      });
     }
   }
 
@@ -38,10 +48,12 @@ namespace GrasshopperAsyncComponent.SampleImplementations
     int TheNthPrime { get; set; } = 100;
     long ThePrime { get; set; } = -1;
 
-    public override void DoWork(Action<string, double> ReportProgress, Action<string, GH_RuntimeMessageLevel> ReportError, Action Done)
+    public PrimeCalculatorWorker() : base(null) { }
+
+    public override void DoWork(Action<string, double> ReportProgress, Action Done)
     {
       // 👉 Checking for cancellation!
-      if (CancellationToken.IsCancellationRequested) return;
+      if (CancellationToken.IsCancellationRequested) { return; }
 
       int count = 0;
       long a = 2;
@@ -50,14 +62,14 @@ namespace GrasshopperAsyncComponent.SampleImplementations
       while (count < TheNthPrime)
       {
         // 👉 Checking for cancellation!
-        if (CancellationToken.IsCancellationRequested) return;
+        if (CancellationToken.IsCancellationRequested) {  return; }
 
         long b = 2;
         int prime = 1;// to check if found a prime
         while (b * b <= a)
         {
           // 👉 Checking for cancellation!
-          if (CancellationToken.IsCancellationRequested) return;
+          if (CancellationToken.IsCancellationRequested) {return; }
 
           if (a % b == 0)
           {
@@ -95,7 +107,7 @@ namespace GrasshopperAsyncComponent.SampleImplementations
     public override void SetData(IGH_DataAccess DA)
     {
       // 👉 Checking for cancellation!
-      if (CancellationToken.IsCancellationRequested) return;
+      if (CancellationToken.IsCancellationRequested) { return; }
 
       DA.SetData(0, ThePrime);
     }

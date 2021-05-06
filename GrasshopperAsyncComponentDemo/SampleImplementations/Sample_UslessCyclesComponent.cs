@@ -5,14 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using GrasshopperAsyncComponent;
+using System.Windows.Forms;
 
-namespace GrasshopperAsyncComponent.SampleImplementations
+namespace GrasshopperAsyncComponentDemo.SampleImplementations
 {
   public class Sample_UselessCyclesAsyncComponent : GH_AsyncComponent
   {
     public override Guid ComponentGuid { get => new Guid("DF2B93E2-052D-4BE4-BC62-90DC1F169BF6"); }
 
-    protected override System.Drawing.Bitmap Icon { get => null; }
+    protected override System.Drawing.Bitmap Icon { get => Properties.Resources.logo32; }
 
     public override GH_Exposure Exposure => GH_Exposure.primary;
 
@@ -30,16 +32,27 @@ namespace GrasshopperAsyncComponent.SampleImplementations
     {
       pManager.AddTextParameter("Output", "O", "Nothing really interesting.", GH_ParamAccess.item);
     }
+
+    public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
+    {
+      base.AppendAdditionalMenuItems(menu);
+      Menu_AppendItem(menu, "Cancel", (s, e) =>
+      {
+        RequestCancellation();
+      });
+    }
   }
 
   public class UselessCyclesWorker : WorkerInstance
   {
     int MaxIterations { get; set; } = 100;
 
-    public override void DoWork(Action<string, double> ReportProgress, Action<string, GH_RuntimeMessageLevel> ReportError, Action Done)
+    public UselessCyclesWorker() : base(null) { }
+
+    public override void DoWork(Action<string, double> ReportProgress, Action Done)
     {
       // Checking for cancellation
-      if (CancellationToken.IsCancellationRequested) return;
+      if (CancellationToken.IsCancellationRequested) { return; }
 
       for (int i = 0; i <= MaxIterations; i++)
       {
@@ -50,7 +63,7 @@ namespace GrasshopperAsyncComponent.SampleImplementations
         ReportProgress(Id, ((double)(i + 1) / (double)MaxIterations));
 
         // Checking for cancellation
-        if (CancellationToken.IsCancellationRequested) return;
+        if (CancellationToken.IsCancellationRequested) { return; }
       }
 
       Done();
